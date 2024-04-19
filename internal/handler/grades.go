@@ -129,7 +129,7 @@ func Diary(w http.ResponseWriter, r *http.Request) {
 }
 
 func Subjects(w http.ResponseWriter, appAuth, sessionAuth, refereeUrl string) {
-	smsUrl := "https://sms.akb.nis.edu.kz/Jce/Diary/GetSubjects?_dc=1713235818260"
+	smsUrl := "https://sms.akb.nis.edu.kz/Jce/Diary/GetSubjects"
 	log.Println("New SMS URL:", smsUrl)
 
 	data := url.Values{}
@@ -146,6 +146,7 @@ func Subjects(w http.ResponseWriter, appAuth, sessionAuth, refereeUrl string) {
 		server.Error(map[string]interface{}{"message": err.Error()}, w)
 		return
 	}
+
 	log.Println("New request created")
 
 	reqs.SetJceCookies(req, appAuth, sessionAuth, refereeUrl)
@@ -170,6 +171,11 @@ func Subjects(w http.ResponseWriter, appAuth, sessionAuth, refereeUrl string) {
 		return
 	}
 
+	if !anotherRespData.Success {
+		server.Error(map[string]interface{}{"success": anotherRespData.Success, "message": anotherRespData.Message}, w)
+		return
+	}
+
 	anotherRespData.Url = refereeUrl
 
 	jsonData, err := json.Marshal(anotherRespData)
@@ -180,7 +186,6 @@ func Subjects(w http.ResponseWriter, appAuth, sessionAuth, refereeUrl string) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	log.Println("Sending response")
 	log.Println(anotherRespData)
 
 	_, err = w.Write(jsonData)

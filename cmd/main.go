@@ -25,6 +25,7 @@ func main() {
 	mux.Handle("/years", loggerWithFormatter(yearsHandler))
 	mux.Handle("/years/terms", loggerWithFormatter(termsHandler))
 	mux.Handle("/diary", loggerWithFormatter(diaryHandler))
+	mux.Handle("/diary/subjects", loggerWithFormatter(nil))
 	mux.Handle("/diary/subjects/evaluation", loggerWithFormatter(evaluationHandler))
 
 	corsHandler := func(next http.Handler) http.Handler {
